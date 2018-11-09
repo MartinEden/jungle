@@ -10,12 +10,21 @@ data class Model(
 ) {
     fun actions(state: Model): Sequence<Action> {
         return human.actions(state) +
-                items
-                        .filter { it.location == human.location }
-                        .flatMap { it.affordances(state).toList() }
+                here.flatMap { it.affordances(state).toList() }
     }
 
-    fun <T: Item> updateItem(item: T, modified: (T) -> T): Model {
+    val here by lazy {
+        items.filter { it.location == human.location || it.location == Inventory }
+    }
+
+    inline fun <reified T> withIfPresent(action: (T) -> Unit) {
+        val item = here.filterIsInstance<T>().singleOrNull()
+        if (item != null) {
+            action(item)
+        }
+    }
+
+    fun <T : Item, R: Item> updateItem(item: T, modified: (T) -> R): Model {
         return copy(items = items - listOf(item) + modified(item))
     }
 

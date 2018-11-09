@@ -7,7 +7,6 @@ import me.edens.jungle.model.Place
 import me.edens.jungle.model.actions.PickupAction
 
 interface Item {
-    val id: String
     val location: Place
 
     fun affordances(state: Model): Sequence<Action>

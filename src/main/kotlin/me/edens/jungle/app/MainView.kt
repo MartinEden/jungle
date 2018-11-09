@@ -29,7 +29,7 @@ class MainView {
         val model = state.model
         root.clear()
         root.append {
-            p { +model.human.location.id }
+            p { +model.human.location.description }
             ul {
                 model.actions(state.model).forEach { action ->
                     li { actionLink(state, action) }
