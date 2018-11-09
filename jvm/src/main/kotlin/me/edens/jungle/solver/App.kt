@@ -9,5 +9,5 @@ fun main(args: Array<String>) {
     }.toList()
     println("Total number of solutions: ${runs.size}")
     println("Shortest solution:")
-    println(runs.first().allSteps().toList().reversed().joinToString("\n⟶ "))
+    println(runs.first().allSteps().toList().reversed().joinToString("\n→ "))
 }
