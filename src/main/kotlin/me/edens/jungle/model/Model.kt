@@ -4,6 +4,7 @@ import me.edens.jungle.model.items.Item
 import me.edens.jungle.model.items.initialItems
 
 data class Model(
+        val status: Status,
         val map: Map,
         val human: Human,
         val items: List<Item>
@@ -31,7 +32,7 @@ data class Model(
     companion object {
         val initial by lazy {
             val map = Map.initial
-            Model(map, Human(Clearing), initialItems())
+            Model(Status.InProgress, map, Human(Clearing), initialItems())
         }
     }
 }

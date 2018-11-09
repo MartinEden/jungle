@@ -1,10 +1,12 @@
 package me.edens.jungle.app
 
+import kotlinx.html.HTML
 import kotlinx.html.TagConsumer
 import kotlinx.html.dom.append
 import kotlinx.html.js.*
 import me.edens.jungle.model.Action
 import me.edens.jungle.model.Inventory
+import me.edens.jungle.model.Status
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 import kotlin.browser.document
@@ -26,24 +28,35 @@ class MainView {
     }
 
     private fun render(state: AppState) {
-        val model = state.model
         root.clear()
         root.append {
-            p { +model.human.location.description }
-            ul {
-                model.actions(state.model).forEach { action ->
-                    li { actionLink(state, action) }
-                }
+            when (state.model.status) {
+                Status.InProgress -> renderMainGameUI(state)
+                Status.Victory -> renderVictoryUI(state)
             }
-            div {
-                p { +"Inventory "}
-                ul {
-                    model.items.filter { it.location == Inventory }.forEach {
-                        li { +it.toString() }
-                    }
+        }
+    }
+
+    private fun TagConsumer<HTMLElement>.renderMainGameUI(state: AppState) {
+        val model = state.model
+        p { +model.human.location.description }
+        ul {
+            model.actions(model).forEach { action ->
+                li { actionLink(state, action) }
+            }
+        }
+        div {
+            p { +"Inventory "}
+            ul {
+                model.items.filter { it.location == Inventory }.forEach {
+                    li { +it.toString() }
                 }
             }
         }
+    }
+
+    private fun TagConsumer<HTMLElement>.renderVictoryUI(state: AppState) {
+        p { +"Victory" }
     }
 
     private fun TagConsumer<HTMLElement>.actionLink(state: AppState, action: Action) = a {
