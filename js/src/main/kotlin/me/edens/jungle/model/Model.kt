@@ -9,8 +9,11 @@ data class Model(
         val human: Human,
         val items: List<Item>
 ) {
-    val actions by lazy {
-        human.actions(this) + here.flatMap { it.affordances(this).toList() }
+    val actions: Sequence<Action> by lazy {
+        when (status) {
+            Status.InProgress -> human.actions(this) + here.flatMap { it.affordances(this).toList() }
+            Status.Victory -> emptySequence()
+        }
     }
 
     val here by lazy {
