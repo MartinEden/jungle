@@ -21,6 +21,14 @@ abstract class BasicItem(
     override fun affordances(state: Model) = moveableAffordances(state)
 
     override fun toString() = description
+
+    override fun equals(other: Any?) = if (other != null && other::class == this::class) {
+        fieldsAreEqual(other as Item)
+    } else {
+        false
+    }
+
+    protected open fun fieldsAreEqual(other: Item) = location == other.location
 }
 
 fun Item.moveableAffordances(state: Model): Sequence<Action> {
