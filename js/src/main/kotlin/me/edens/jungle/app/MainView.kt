@@ -41,7 +41,7 @@ class MainView {
         val model = state.model
         p { +model.human.location.description }
         ul {
-            model.actions(model).forEach { action ->
+            model.actions.forEach { action ->
                 li { actionLink(state, action) }
             }
         }

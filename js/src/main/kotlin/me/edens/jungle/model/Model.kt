@@ -9,9 +9,8 @@ data class Model(
         val human: Human,
         val items: List<Item>
 ) {
-    fun actions(state: Model): Sequence<Action> {
-        return human.actions(state) +
-                here.flatMap { it.affordances(state).toList() }
+    val actions by lazy {
+        human.actions(this) + here.flatMap { it.affordances(this).toList() }
     }
 
     val here by lazy {
@@ -25,7 +24,7 @@ data class Model(
         }
     }
 
-    fun <T : Item, R: Item> updateItem(item: T, modified: (T) -> R): Model {
+    fun <T : Item, R : Item> updateItem(item: T, modified: (T) -> R): Model {
         return copy(items = items - listOf(item) + modified(item))
     }
 
