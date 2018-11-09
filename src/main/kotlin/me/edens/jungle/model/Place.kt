@@ -4,6 +4,8 @@ abstract class Place(val id: String) {
     override fun toString() = id
 }
 
+object Inventory : Place("inventory")
+
 object WolfDen : Place("wolf-den")
 object MonsterNest : Place("monster-nest")
 object PigsPlace : Place("pig-place")

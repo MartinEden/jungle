@@ -1,27 +1,12 @@
 package me.edens.jungle.model
 
-data class Map(val places: Set<Place>, val transitions: Set<PlaceTransitions>) {
+data class Map(val transitions: Set<PlaceTransitions>) {
     private val transitionMap = transitions.associateBy({ it.source }, { it.transitions })
 
-    fun getPlace(id: String) = places.single { it.id == id }
     fun getNeighbours(place: Place) = transitionMap[place]!!.map { it.value }
 
     companion object {
         val initial = Map(
-                setOf(
-                        WolfDen,
-                        MonsterNest,
-                        PigsPlace,
-                        HivePlace,
-                        SpiderLair,
-                        FlowerGrove,
-                        Clearing,
-                        Cliff,
-                        VinePlace,
-                        CrashSite,
-                        Cave,
-                        CliffLedge
-                ),
                 setOf(
                         PlaceTransitions(WolfDen, setOf(
                                 "south" transitionTo  PigsPlace

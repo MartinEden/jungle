@@ -4,6 +4,7 @@ import kotlinx.html.TagConsumer
 import kotlinx.html.dom.append
 import kotlinx.html.js.*
 import me.edens.jungle.model.Action
+import me.edens.jungle.model.Inventory
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 import kotlin.browser.document
@@ -30,8 +31,16 @@ class MainView {
         root.append {
             p { +model.human.location.id }
             ul {
-                model.human.actions(state.model).forEach { action ->
+                model.actions(state.model).forEach { action ->
                     li { actionLink(state, action) }
+                }
+            }
+            div {
+                p { +"Inventory "}
+                ul {
+                    model.items.filter { it.location == Inventory }.forEach {
+                        li { +it.toString() }
+                    }
                 }
             }
         }

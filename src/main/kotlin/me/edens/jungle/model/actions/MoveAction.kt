@@ -1,4 +1,8 @@
-package me.edens.jungle.model
+package me.edens.jungle.model.actions
+
+import me.edens.jungle.model.Action
+import me.edens.jungle.model.Model
+import me.edens.jungle.model.Transition
 
 class MoveAction(val transition: Transition) : Action {
     override val description = "Go ${transition.description} to ${transition.target}"
