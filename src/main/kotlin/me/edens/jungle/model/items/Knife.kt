@@ -5,11 +5,9 @@ import me.edens.jungle.model.Inventory
 import me.edens.jungle.model.Model
 import me.edens.jungle.model.Place
 
-data class Knife(override val location: Place) : Item {
+class Knife(location: Place) : BasicItem("Knife", location) {
     override fun affordances(state: Model): Sequence<Action> {
-        val item = this
-        return sequence {
-            yieldAll(item.moveableAffordances(state))
+        return super.affordances(state) + sequence {
             state.withIfPresent<Parachute> {
                 yield(CutParachuteIntoStripsAction(it))
             }
@@ -17,10 +15,8 @@ data class Knife(override val location: Place) : Item {
     }
 
     override fun atLocation(place: Place): Item {
-        return copy(location = place)
+        return Knife(location = place)
     }
-
-    override fun toString() = "Knife"
 
     class CutParachuteIntoStripsAction(private val parachute: Parachute) : Action {
         override val description = "Use the knife to cut the parachute into strips"

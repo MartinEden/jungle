@@ -5,32 +5,20 @@ import me.edens.jungle.model.Inventory
 import me.edens.jungle.model.Model
 import me.edens.jungle.model.Place
 
-data class Parachute(override val location: Place) : Item {
-    override fun affordances(state: Model): Sequence<Action> {
-        return this.moveableAffordances(state)
-    }
-
+class Parachute(location: Place) : BasicItem("Parachute", location) {
     override fun atLocation(place: Place): Item {
-        return copy(location = place)
+        return Parachute(location = place)
     }
-
-    override fun toString() = "Parachute"
 }
 
-data class ParachuteStrips(override val location: Place): Item {
+class ParachuteStrips(location: Place) : BasicItem("Strips of parachute cloth", location) {
     override fun affordances(state: Model): Sequence<Action> {
-        val item = this
-        return sequence {
-            yieldAll(item.moveableAffordances(state))
-            yield(TieStripsIntoRopeAction(item))
-        }
+        return super.affordances(state) + sequenceOf(TieStripsIntoRopeAction(this))
     }
 
     override fun atLocation(place: Place): Item {
-        return copy(location = place)
+        return ParachuteStrips(location = place)
     }
-
-    override fun toString() = "Strips of parachute cloth"
 
     class TieStripsIntoRopeAction(private val strips: ParachuteStrips) : Action {
         override val description = "Tie the parachute strips together to make a rough rope"

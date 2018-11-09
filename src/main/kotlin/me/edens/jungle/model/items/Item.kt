@@ -7,10 +7,20 @@ import me.edens.jungle.model.Place
 import me.edens.jungle.model.actions.PickupAction
 
 interface Item {
+    val description: String
     val location: Place
 
     fun affordances(state: Model): Sequence<Action>
     fun atLocation(place: Place): Item
+}
+
+abstract class BasicItem(
+        override val description: String,
+        override val location: Place
+) : Item {
+    override fun affordances(state: Model) = moveableAffordances(state)
+
+    override fun toString() = description
 }
 
 fun Item.moveableAffordances(state: Model): Sequence<Action> {
