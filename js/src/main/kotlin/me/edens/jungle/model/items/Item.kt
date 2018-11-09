@@ -18,7 +18,7 @@ abstract class BasicItem(
         override val description: String,
         override val location: Place
 ) : Item {
-    override fun affordances(state: Model) = moveableAffordances(state)
+    override fun affordances(state: Model) = moveableAffordances()
 
     override fun toString() = description
 
@@ -31,7 +31,7 @@ abstract class BasicItem(
     protected open fun fieldsAreEqual(other: Item) = location == other.location
 }
 
-fun Item.moveableAffordances(state: Model): Sequence<Action> {
+fun Item.moveableAffordances(): Sequence<Action> {
     val item = this
     return sequence {
         if (item.location != Inventory) {

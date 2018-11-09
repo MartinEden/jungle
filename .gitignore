@@ -1,5 +1,5 @@
-.gradle/*
-.idea/*
-build/*
-out/*
-web/*
+*/.gradle/*
+*/.idea/*
+*/build/*
+*/out/*
+js/web/*
