@@ -1,6 +1,8 @@
 package me.edens.jungle.model
 
 import me.edens.jungle.model.actors.Actor
+import me.edens.jungle.model.evidence.Evidence
+import me.edens.jungle.model.evidence.TextEvidence
 
 interface ActorAction {
     fun apply(change: ModelChange): ModelChange
@@ -8,32 +10,32 @@ interface ActorAction {
 
 class IsolatedActorAction<TActor: Actor>(
         private val actor: TActor,
-        private val feedback: String,
+        private val evidence: Evidence,
         private val func: (TActor) -> TActor
 ): ActorAction {
     override fun apply(change: ModelChange) = ModelChange(
             change.newModel.updateActor(actor, func),
-            change.feedback + feedback
+            change.evidence + evidence
     )
 }
 
 class GlobalActorAction(
-        private val feedback: String,
+        private val evidence: Evidence,
         private val func: (Model) -> Model
 ): ActorAction {
     override fun apply(change: ModelChange) = ModelChange(
             func(change.newModel),
-            change.feedback + feedback
+            change.evidence + evidence
     )
 }
 
 fun <TActor: Actor> TActor.update(
-        feedback: String,
+        evidence: String,
         func: (TActor) -> TActor
-) = IsolatedActorAction(this, feedback, func)
+) = IsolatedActorAction(this, TextEvidence(evidence, this.location), func)
 
 fun Actor.updateModel(
-        feedback: String,
+        evidence: String,
         func: (Model) -> Model
-) = GlobalActorAction(feedback, func)
+) = GlobalActorAction(TextEvidence(evidence, this.location), func)
 

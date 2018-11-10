@@ -8,6 +8,7 @@ import me.edens.jungle.model.Action
 import me.edens.jungle.model.Inventory
 import me.edens.jungle.model.Status
 import me.edens.jungle.model.actors.Monster
+import me.edens.jungle.model.evidence.TextEvidence
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 import kotlin.browser.document
@@ -26,15 +27,15 @@ class MainView {
 
     private fun dispatch(state: AppState, action: Action) {
         val modelChange = state.model.update(action)
-        render(AppState(modelChange.newModel, modelChange.feedback))
+        render(AppState(modelChange.newModel, modelChange.evidence))
     }
 
     private fun render(state: AppState) {
         root.clear()
         root.append {
             ul {
-                state.feedback.forEach {
-                    li { +it }
+                state.feedback.filterIsInstance<TextEvidence>().forEach {
+                    li { +it.message }
                 }
             }
             when (state.model.status) {

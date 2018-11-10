@@ -4,6 +4,7 @@ import me.edens.jungle.model.Action
 import me.edens.jungle.model.Inventory
 import me.edens.jungle.model.Model
 import me.edens.jungle.model.Place
+import me.edens.jungle.model.evidence.withNoEvidence
 
 class Knife(location: Place) : BasicItem("Knife", location) {
     override fun affordances(state: Model): Sequence<Action> {
@@ -23,6 +24,6 @@ class Knife(location: Place) : BasicItem("Knife", location) {
 
         override fun apply(model: Model) = model.updateItem(parachute) {
             ParachuteStrips(Inventory)
-        }
+        }.withNoEvidence()
     }
 }

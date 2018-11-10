@@ -3,7 +3,7 @@ package me.edens.jungle.model
 import me.edens.jungle.model.actions.DoNothingAction
 import me.edens.jungle.model.actions.MoveAction
 
-data class Human(val location: Place) {
+data class Human(override val location: Place): Thing {
     fun actions(model: Model): Sequence<Action> {
         return sequenceOf(DoNothingAction()) + movementActions(model)
     }

@@ -3,9 +3,8 @@ package me.edens.jungle.model.items
 import me.edens.jungle.model.*
 import me.edens.jungle.model.actions.PickupAction
 
-interface Item {
+interface Item : Thing {
     val description: String
-    val location: Place
 
     fun affordances(state: Model): Sequence<Action>
     fun atLocation(place: Place): Item

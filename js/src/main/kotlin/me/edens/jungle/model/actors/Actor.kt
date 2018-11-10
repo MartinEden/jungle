@@ -1,13 +1,8 @@
 package me.edens.jungle.model.actors
 
-import me.edens.jungle.model.ActorAction
-import me.edens.jungle.model.Model
-import me.edens.jungle.model.Place
-import me.edens.jungle.model.StructuralEqualityBase
+import me.edens.jungle.model.*
 
-interface Actor {
-    val location: Place
-
+interface Actor : Thing {
     fun act(model: Model): ActorAction
 }
 
