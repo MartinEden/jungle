@@ -6,6 +6,7 @@ data class Monster(override val location: Place, val inhaled: Boolean) : BasicAc
     override fun act(model: Model): ActorAction {
         return when {
             inhaled -> breathFire(model)
+            model.human.location == MonsterNest -> protectBabies()
             model.human.location == this.location -> inhale()
             else -> atLocation(nextPlace(location))
         }
@@ -19,6 +20,9 @@ data class Monster(override val location: Place, val inhaled: Boolean) : BasicAc
     }
     private fun breathFire(model: Model) = updateModel("Monster breaths fire on you, killing you") {
         model.copy(status = Status.Death)
+    }
+    private fun protectBabies() = update("Monster charges to be babies rescue, nostrils flaming") {
+        copy(location = MonsterNest, inhaled = true)
     }
 
     private fun nextPlace(place: Place) = when (place) {

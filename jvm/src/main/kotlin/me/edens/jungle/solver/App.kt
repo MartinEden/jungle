@@ -8,6 +8,10 @@ fun main(args: Array<String>) {
         it.status == Status.Victory
     }.toList()
     println("Total number of solutions: ${runs.size}")
-    println("Shortest solution:")
-    println(runs.first().allSteps().toList().reversed().joinToString("\n→ "))
+    if (runs.any()) {
+        println("Shortest solution:")
+        println(runs.first().allSteps().joinToString("\n→ "))
+    } else {
+        println("Unable to find run that satisfies solution")
+    }
 }

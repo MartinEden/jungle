@@ -77,7 +77,7 @@ class SubsequentNode(var link: Link) : Node {
 
 data class Link(val parent: Node, val action: Action)
 
-fun Node.allSteps(): Sequence<Node> {
+fun Node.allSteps(): List<Node> {
     val that = this
     return sequence {
         var node = that
@@ -86,5 +86,5 @@ fun Node.allSteps(): Sequence<Node> {
             node = node.link.parent
             yield(node)
         }
-    }
+    }.toList().reversed()
 }
