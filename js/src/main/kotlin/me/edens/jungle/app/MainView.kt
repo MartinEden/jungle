@@ -32,6 +32,11 @@ class MainView {
     private fun render(state: AppState) {
         root.clear()
         root.append {
+            ul {
+                state.feedback.forEach {
+                    li { +it }
+                }
+            }
             when (state.model.status) {
                 Status.InProgress -> renderMainGameUI(state)
                 Status.Victory -> renderVictoryUI()
@@ -42,12 +47,6 @@ class MainView {
 
     private fun TagConsumer<HTMLElement>.renderMainGameUI(state: AppState) {
         val model = state.model
-        val monster = model.actors.filterIsInstance<Monster>().single()
-        ul {
-            state.feedback.forEach {
-                li { +it }
-            }
-        }
         p { +model.human.location.description }
         ul {
             model.actions.forEach { action ->
