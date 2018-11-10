@@ -3,6 +3,8 @@ package me.edens.jungle.solver
 import me.edens.jungle.model.Action
 import me.edens.jungle.model.InitialModelState
 import me.edens.jungle.model.Model
+import me.edens.jungle.model.actions.HumanAction
+import me.edens.jungle.model.evidence.TextEvidence
 import java.util.*
 
 const val hardExplorationLimit = 10000
@@ -15,7 +17,7 @@ class StateExplorer {
 
         while (open.any() && stateLookup.size < hardExplorationLimit) {
             val current = open.removeFirst()
-            for (action in current.state.actions) {
+            for (action in current.state.actionOptions) {
                 val node = SubsequentNode(Link(current, action))
                 val existingNode = stateLookup[node.state]
                 if (existingNode != null) {
@@ -65,7 +67,9 @@ class SubsequentNode(var link: Link) : Node {
     }
 
     override val state: Model by lazy { modelChange.newModel }
-    override val feedback: List<String> by lazy { modelChange.feedback }
+    override val feedback: List<String> by lazy {
+        modelChange.evidence.filterIsInstance<TextEvidence>().map { it.message }
+    }
     override val pathLength = 1 + link.parent.pathLength
 
     override fun toString(): String {
@@ -75,7 +79,7 @@ class SubsequentNode(var link: Link) : Node {
     }
 }
 
-data class Link(val parent: Node, val action: Action)
+data class Link(val parent: Node, val action: HumanAction)
 
 fun Node.allSteps(): List<Node> {
     val that = this
