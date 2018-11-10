@@ -1,16 +1,16 @@
 package me.edens.jungle.model
 
+import me.edens.jungle.model.actions.HumanAction
 import me.edens.jungle.model.actors.Actor
 import me.edens.jungle.model.items.Item
 
 data class Model(
         val status: Status,
         val map: Map,
-        val human: Human,
         val items: List<Item>,
         val actors: List<Actor>
 ) {
-    val actions: Sequence<Action> by lazy {
+    val actionOptions: Sequence<HumanAction> by lazy {
         when (status) {
             Status.InProgress -> human.actions(this) + here.flatMap { it.affordances(this).toList() }
             else -> emptySequence()
@@ -20,8 +20,12 @@ data class Model(
     fun update(action: Action): ModelChange {
         val afterAction = action.apply(this)
         return actors.fold(afterAction) { state, actor ->
-            actor.act(state.newModel).apply(state)
+            actor.act(state.newModel).apply(state.newModel)
         }
+    }
+
+    val human by lazy {
+        actors.filterIsInstance<Human>().single()
     }
 
     val here by lazy {
@@ -38,7 +42,7 @@ data class Model(
     fun <T : Item, R : Item> updateItem(item: T, modified: (T) -> R): Model {
         return copy(items = items - listOf(item) + modified(item))
     }
-    fun <T : Actor, R : Actor> updateActor(actor: T, modified: T.() -> R): Model {
-        return copy(actors = actors - listOf(actor) + modified(actor))
+    fun <T : Actor, R : Actor> replaceActor(old: T, new: R): Model {
+        return copy(actors = actors - old + new)
     }
 }

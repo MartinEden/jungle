@@ -1,21 +1,26 @@
 package me.edens.jungle.model.actions
 
-import me.edens.jungle.model.Action
-import me.edens.jungle.model.Model
-import me.edens.jungle.model.ModelChange
-import me.edens.jungle.model.Transition
+import me.edens.jungle.model.*
+import me.edens.jungle.model.actors.Actor
+import me.edens.jungle.model.evidence.Evidence
 import me.edens.jungle.model.evidence.MovementEvidence
 import me.edens.jungle.model.evidence.withEvidence
 
-class MoveAction(val transition: Transition) : Action {
-    override val description = "Go ${transition.description} to ${transition.target}"
+open class MoveAction<TActor : Actor>(actor: TActor, private val target: Place)
+    : SimpleActorAction<TActor>(actor) {
 
-    override fun apply(model: Model): ModelChange {
-        val newModel = model.run { copy(human = human.atLocation(transition.target)) }
-        return newModel withEvidence MovementEvidence(
-                newModel.human,
-                model.human.location,
-                newModel.human.location
-        )
-    }
+    @Suppress("UNCHECKED_CAST")
+    override fun update(actor: TActor) = actor.atLocation(target) as TActor
+
+    override fun evidence(newActor: TActor) = MovementEvidence(
+            newActor,
+            actor.location,
+            newActor.location
+    )
+}
+
+class HumanMoveAction(human: Human, transition: Transition)
+    : MoveAction<Human>(human, transition.target), HumanAction {
+
+    override val description = "Go ${transition.description} to ${transition.target}"
 }

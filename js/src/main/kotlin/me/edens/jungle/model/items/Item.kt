@@ -1,12 +1,13 @@
 package me.edens.jungle.model.items
 
 import me.edens.jungle.model.*
+import me.edens.jungle.model.actions.HumanAction
 import me.edens.jungle.model.actions.PickupAction
 
 interface Item : Thing {
     val description: String
 
-    fun affordances(state: Model): Sequence<Action>
+    fun affordances(state: Model): Sequence<HumanAction>
     fun atLocation(place: Place): Item
 }
 
@@ -24,7 +25,7 @@ abstract class BasicItem(
     }
 }
 
-fun Item.moveableAffordances(): Sequence<Action> {
+fun Item.moveableAffordances(): Sequence<HumanAction> {
     val item = this
     return sequence {
         if (item.location != Inventory) {

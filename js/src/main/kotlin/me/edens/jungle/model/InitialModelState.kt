@@ -7,7 +7,7 @@ import me.edens.jungle.model.items.Parachute
 object InitialModelState {
     val model by lazy {
         val map = Map.initial
-        Model(Status.InProgress, map, Human(Clearing), initialItems, initialActors)
+        Model(Status.InProgress, map, initialItems, initialActors)
     }
 
     private val initialItems by lazy {
@@ -19,6 +19,7 @@ object InitialModelState {
 
     private val initialActors by lazy {
         listOf(
+                Human(Clearing),
                 Monster(MonsterNest, inhaled = false)
         )
     }

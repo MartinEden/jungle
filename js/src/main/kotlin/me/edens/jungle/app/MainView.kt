@@ -1,13 +1,12 @@
 package me.edens.jungle.app
 
-import kotlinx.html.HTML
 import kotlinx.html.TagConsumer
 import kotlinx.html.dom.append
 import kotlinx.html.js.*
 import me.edens.jungle.model.Action
 import me.edens.jungle.model.Inventory
 import me.edens.jungle.model.Status
-import me.edens.jungle.model.actors.Monster
+import me.edens.jungle.model.actions.HumanAction
 import me.edens.jungle.model.evidence.TextEvidence
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
@@ -50,7 +49,7 @@ class MainView {
         val model = state.model
         p { +model.human.location.description }
         ul {
-            model.actions.forEach { action ->
+            model.actionOptions.forEach { action ->
                 li { actionLink(state, action) }
             }
         }
@@ -72,7 +71,7 @@ class MainView {
         p { +"Death" }
     }
 
-    private fun TagConsumer<HTMLElement>.actionLink(state: AppState, action: Action) = a {
+    private fun TagConsumer<HTMLElement>.actionLink(state: AppState, action: HumanAction) = a {
         href = "#"
         +action.description
         onClickFunction = { dispatch(state, action) }
