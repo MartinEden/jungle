@@ -24,7 +24,7 @@ class MainView {
     }
 
     private fun dispatch(state: AppState, action: Action) {
-        render(AppState(action.apply(state.model)))
+        render(AppState(state.model.update(action)))
     }
 
     private fun render(state: AppState) {
@@ -44,6 +44,9 @@ class MainView {
             model.actions.forEach { action ->
                 li { actionLink(state, action) }
             }
+        }
+        p {
+            +model.actors.first().location.toString()
         }
         div {
             p { +"Inventory "}

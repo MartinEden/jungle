@@ -1,6 +1,7 @@
 package me.edens.jungle.solver
 
 import me.edens.jungle.model.Action
+import me.edens.jungle.model.InitialModelState
 import me.edens.jungle.model.Model
 import java.util.*
 
@@ -49,14 +50,14 @@ interface Node {
 }
 
 object InitialNode : Node {
-    override val state = Model.initial
+    override val state = InitialModelState.model
     override val pathLength = 0
 
     override fun toString() = "∅"
 }
 class SubsequentNode(var link: Link) : Node {
     override val state by lazy {
-        link.action.apply(link.parent.state)
+        link.parent.state.update(link.action)
     }
     override val pathLength = 1 + link.parent.pathLength
 

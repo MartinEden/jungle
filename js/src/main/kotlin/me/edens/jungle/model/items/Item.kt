@@ -1,9 +1,6 @@
 package me.edens.jungle.model.items
 
-import me.edens.jungle.model.Action
-import me.edens.jungle.model.Inventory
-import me.edens.jungle.model.Model
-import me.edens.jungle.model.Place
+import me.edens.jungle.model.*
 import me.edens.jungle.model.actions.PickupAction
 
 interface Item {
@@ -17,18 +14,15 @@ interface Item {
 abstract class BasicItem(
         override val description: String,
         override val location: Place
-) : Item {
+) : StructuralEqualityBase(), Item {
     override fun affordances(state: Model) = moveableAffordances()
 
     override fun toString() = description
 
-    override fun equals(other: Any?) = if (other != null && other::class == this::class) {
-        fieldsAreEqual(other as Item)
-    } else {
-        false
+    override fun fieldsAreEqual(other: Any): Boolean {
+        val x = other as BasicItem
+        return description == x.description && location == x.location
     }
-
-    protected open fun fieldsAreEqual(other: Item) = location == other.location
 }
 
 fun Item.moveableAffordances(): Sequence<Action> {
