@@ -19,7 +19,7 @@ object InitialModelState {
 
     private val initialActors by lazy {
         listOf(
-                Monster(MonsterNest)
+                Monster(MonsterNest, inhaled = false)
         )
     }
 }

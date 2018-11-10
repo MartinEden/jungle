@@ -46,23 +46,35 @@ class StateExplorer {
 
 interface Node {
     val state: Model
+    val feedback: List<String>
     val pathLength: Int
 }
 
 object InitialNode : Node {
     override val state = InitialModelState.model
+    override val feedback = emptyList<String>()
+
     override val pathLength = 0
 
     override fun toString() = "∅"
 }
+
 class SubsequentNode(var link: Link) : Node {
-    override val state by lazy {
+    private val modelChange by lazy {
         link.parent.state.update(link.action)
     }
+
+    override val state: Model by lazy { modelChange.newModel }
+    override val feedback: List<String> by lazy { modelChange.feedback }
     override val pathLength = 1 + link.parent.pathLength
 
-    override fun toString() = link.action.description
+    override fun toString(): String {
+        val action = link.action.description
+        val feedback = feedback.joinToString(", ")
+        return "$action ($feedback)"
+    }
 }
+
 data class Link(val parent: Node, val action: Action)
 
 fun Node.allSteps(): Sequence<Node> {

@@ -13,14 +13,14 @@ data class Model(
     val actions: Sequence<Action> by lazy {
         when (status) {
             Status.InProgress -> human.actions(this) + here.flatMap { it.affordances(this).toList() }
-            Status.Victory -> emptySequence()
+            else -> emptySequence()
         }
     }
 
-    fun update(action: Action): Model {
-        val afterAction = action.apply(this)
+    fun update(action: Action): ModelChange {
+        val afterAction = ModelChange(action.apply(this), emptyList())
         return actors.fold(afterAction) { state, actor ->
-            state.updateActor(actor) { it.act() }
+            actor.act(state.newModel).apply(state)
         }
     }
 
@@ -38,7 +38,7 @@ data class Model(
     fun <T : Item, R : Item> updateItem(item: T, modified: (T) -> R): Model {
         return copy(items = items - listOf(item) + modified(item))
     }
-    fun <T : Actor, R : Actor> updateActor(actor: T, modified: (T) -> R): Model {
+    fun <T : Actor, R : Actor> updateActor(actor: T, modified: T.() -> R): Model {
         return copy(actors = actors - listOf(actor) + modified(actor))
     }
 }
