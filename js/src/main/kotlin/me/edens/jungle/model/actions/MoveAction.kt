@@ -2,21 +2,14 @@ package me.edens.jungle.model.actions
 
 import me.edens.jungle.model.*
 import me.edens.jungle.model.actors.Actor
-import me.edens.jungle.model.evidence.Evidence
 import me.edens.jungle.model.evidence.MovementEvidence
-import me.edens.jungle.model.evidence.withEvidence
 
 open class MoveAction<TActor : Actor>(actor: TActor, private val target: Place)
-    : SimpleActorAction<TActor>(actor) {
+    : ActorAction<TActor>(actor) {
 
-    @Suppress("UNCHECKED_CAST")
-    override fun update(actor: TActor) = actor.atLocation(target) as TActor
-
-    override fun evidence(newActor: TActor) = MovementEvidence(
-            newActor,
-            actor.location,
-            newActor.location
-    )
+    override fun update(actor: TActor) = actor.atLocation(target).withEvidence {
+        MovementEvidence<TActor>(actor.location, it.location)
+    }
 }
 
 class HumanMoveAction(human: Human, transition: Transition)

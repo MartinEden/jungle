@@ -1,8 +1,9 @@
 package me.edens.jungle.model.actors
 
 import me.edens.jungle.model.*
+import me.edens.jungle.model.actions.ActorAction
 import me.edens.jungle.model.actions.MoveAction
-import me.edens.jungle.model.actions.SimpleActorAction
+import me.edens.jungle.model.actions.withEvidence
 import me.edens.jungle.model.evidence.TextEvidence
 import me.edens.jungle.model.evidence.withEvidence
 
@@ -17,9 +18,10 @@ data class Monster(override val location: Place, val inhaled: Boolean) : BasicAc
     }
 
     private fun moveTo(place: Place) = MoveAction(this, place)
-    private fun inhale() = object : SimpleActorAction<Monster>(this) {
-        override fun update(actor: Monster) = actor.copy(inhaled = true)
-        override fun evidence(newActor: Monster) = TextEvidence("Monster inhales", newActor.location)
+    private fun inhale() = object : ActorAction<Monster>(this) {
+        override fun update(actor: Monster) = actor.copy(inhaled = true).withEvidence {
+            TextEvidence("Monster inhales", location)
+        }
     }
 
     private fun breathFire() = object : Action {
@@ -27,9 +29,10 @@ data class Monster(override val location: Place, val inhaled: Boolean) : BasicAc
                 TextEvidence("Monster breaths fire on you, killing you", location)
     }
 
-    private fun protectBabies() = object : SimpleActorAction<Monster>(this) {
-        override fun update(actor: Monster) = copy(location = MonsterNest, inhaled = true)
-        override fun evidence(newActor: Monster) = TextEvidence("Monster charges to be babies rescue, nostrils flaming", newActor.location)
+    private fun protectBabies() = object : ActorAction<Monster>(this) {
+        override fun update(actor: Monster) = copy(location = MonsterNest, inhaled = true).withEvidence {
+            TextEvidence("Monster charges to be babies rescue, nostrils flaming", location)
+        }
     }
 
     private fun nextPlace(place: Place) = when (place) {
