@@ -1,10 +1,8 @@
 package me.edens.jungle.solver
 
-import me.edens.jungle.model.Action
 import me.edens.jungle.model.InitialModelState
 import me.edens.jungle.model.Model
 import me.edens.jungle.model.actions.HumanAction
-import me.edens.jungle.model.evidence.TextEvidence
 import java.util.*
 
 const val hardExplorationLimit = 10000
@@ -68,7 +66,9 @@ class SubsequentNode(var link: Link) : Node {
 
     override val state: Model by lazy { modelChange.newModel }
     override val feedback: List<String> by lazy {
-        modelChange.evidence.filterIsInstance<TextEvidence>().map { it.message }
+        modelChange.evidence
+                .filter { it.apparentTo(state.human) }
+                .map { it.describe(state.human) }
     }
     override val pathLength = 1 + link.parent.pathLength
 

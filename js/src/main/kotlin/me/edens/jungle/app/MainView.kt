@@ -7,7 +7,6 @@ import me.edens.jungle.model.Action
 import me.edens.jungle.model.Inventory
 import me.edens.jungle.model.Status
 import me.edens.jungle.model.actions.HumanAction
-import me.edens.jungle.model.evidence.TextEvidence
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 import kotlin.browser.document
@@ -26,7 +25,9 @@ class MainView {
 
     private fun dispatch(state: AppState, action: Action) {
         val modelChange = state.model.update(action)
-        val feedback = modelChange.evidence.filter { it.apparentTo(modelChange.newModel.human) }
+        val feedback = modelChange.evidence
+                .filter { it.apparentTo(modelChange.newModel.human) }
+                .map { it.describe(modelChange.newModel.human) }
         render(AppState(modelChange.newModel, feedback))
     }
 
@@ -35,7 +36,7 @@ class MainView {
         root.append {
             ul {
                 state.feedback.forEach {
-                    li { +it.toString() }
+                    li { +it }
                 }
             }
             when (state.model.status) {

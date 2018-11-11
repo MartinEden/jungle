@@ -10,8 +10,9 @@ data class MovementEvidence(
         val destination: Place
 ) : Evidence {
     override fun apparentTo(observer: Human): Boolean {
-        return observer.location == source || observer.location == destination
+        return subject != Signature.Human
+            && (observer.location == source || observer.location == destination)
     }
 
-    override fun toString() = "$subject moves from $source to $destination"
+    override fun describe(observer: Human) = "$subject moves from $source to $destination"
 }

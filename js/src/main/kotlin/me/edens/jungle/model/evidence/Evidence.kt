@@ -6,6 +6,7 @@ import me.edens.jungle.model.ModelChange
 
 interface Evidence {
     fun apparentTo(observer: Human): Boolean
+    fun describe(observer: Human): String
 }
 
 infix fun Model.withEvidence(evidence: Evidence) = ModelChange(this, listOf(evidence))

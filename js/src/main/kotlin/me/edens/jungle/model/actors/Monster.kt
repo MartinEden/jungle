@@ -4,19 +4,19 @@ import me.edens.jungle.model.*
 import me.edens.jungle.model.actions.ActorAction
 import me.edens.jungle.model.actions.MoveAction
 import me.edens.jungle.model.actions.withEvidence
-import me.edens.jungle.model.evidence.Evidence
-import me.edens.jungle.model.evidence.TextEvidence
+import me.edens.jungle.model.evidence.AudioEvidence
+import me.edens.jungle.model.evidence.DualEvidence
+import me.edens.jungle.model.evidence.VisualEvidence
 import me.edens.jungle.model.evidence.withEvidence
 
 data class Monster(
         override val location: Place,
-        val inhaled: Boolean,
-        val target: Place? = null
+        val breath: FireBreath
 ) : BasicActor(Signature.Monster), MoveableActor {
     override fun act(model: Model): Action {
         val sight = getSightOf(model.human, model)
         return when {
-            inhaled -> breathFire()
+            breath is FireBreath.Inhaled -> breathFire(sight, breath.targetLastSeenAt)
             model.human.location == MonsterNest -> protectBabies()
             sight is Sight.Saw -> inhale(sight.place)
             else -> moveTo(nextPlace(location))
@@ -26,16 +26,22 @@ data class Monster(
     private fun moveTo(place: Place) = MoveAction(this, place)
 
     private fun inhale(target: Place) = object : ActorAction<Monster>(this) {
-        override fun update(actor: Monster) = actor.copy(inhaled = true, target = target).withEvidence {
-            TextEvidence("Monster inhales", location)
+        override fun update(actor: Monster) = actor.copy(breath = FireBreath.Inhaled(target)).withEvidence {
+            DualEvidence(
+                    VisualEvidence("Monster inhales", location),
+                    AudioEvidence("a deep rushing sound, like air being sucked into a bellows")
+            )
         }
     }
 
-    private fun breathFire() = BreathFireAction(this, target!!)
+    private fun breathFire(sight: Sight, previousLocation: Place): Action {
+        val newTarget = if (sight is Sight.Saw) { sight.place } else { previousLocation }
+        return BreathFireAction(this, newTarget)
+    }
 
     private fun protectBabies() = object : ActorAction<Monster>(this) {
-        override fun update(actor: Monster) = copy(location = MonsterNest, inhaled = true).withEvidence {
-            TextEvidence("Monster charges to be babies rescue, nostrils flaming", location)
+        override fun update(actor: Monster) = copy(location = MonsterNest, breath = FireBreath.Inhaled(MonsterNest)).withEvidence {
+            VisualEvidence("Monster charges to be babies rescue, nostrils flaming", location)
         }
     }
 
@@ -54,19 +60,26 @@ data class Monster(
 
     override fun fieldsAreEqual(other: Any): Boolean {
         return super.fieldsAreEqual(other)
-                && inhaled == (other as Monster).inhaled
+                && breath == (other as Monster).breath
     }
 
     override fun atLocation(location: Place) = copy(location = location)
 
-    class BreathFireAction(private val monster: Monster, private val target: Place): Action {
+    class BreathFireAction(private val monster: Monster, private val target: Place) : Action {
         override fun apply(model: Model): ModelChange {
-            val newModel = model.replaceActor(monster, monster.copy(inhaled = false, target = null))
-            return if (newModel.human.location == target) {
-                newModel.copy(status = Status.Death) withEvidence TextEvidence("The monster breaths fire on you, killing you", target)
-            } else {
-                newModel withEvidence TextEvidence("You hear the monster's flames whoosh in the jungle behind you", target)
+            var newModel = model.replaceActor(monster, monster.copy(breath = FireBreath.NotReady))
+            if (newModel.human.location == target) {
+                newModel = newModel.copy(status = Status.Death)
             }
+            return newModel withEvidence DualEvidence(
+                    VisualEvidence("The monster breaths fire on you, killing you", target),
+                    AudioEvidence("the monster's flames whoosh in the jungle behind you")
+            )
         }
     }
+}
+
+sealed class FireBreath {
+    object NotReady: FireBreath()
+    data class Inhaled(val targetLastSeenAt: Place): FireBreath()
 }
