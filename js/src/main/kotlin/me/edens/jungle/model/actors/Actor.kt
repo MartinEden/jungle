@@ -1,9 +1,8 @@
 package me.edens.jungle.model.actors
 
 import me.edens.jungle.model.*
-import me.edens.jungle.model.evidence.Observer
 
-interface Actor : Thing, Observer {
+interface Actor : Thing {
     val signature: Signature
     fun act(model: Model): Action
     fun atLocation(location: Place): Actor

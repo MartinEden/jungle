@@ -1,12 +1,13 @@
 package me.edens.jungle.model.evidence
 
+import me.edens.jungle.model.Human
 import me.edens.jungle.model.Model
 import me.edens.jungle.model.ModelChange
 import me.edens.jungle.model.actors.Signature
 
 interface Evidence {
     val subject: Signature
-    fun apparentTo(observer: Observer): Boolean
+    fun apparentTo(observer: Human): Boolean
 }
 
 infix fun Model.withEvidence(evidence: Evidence) = ModelChange(this, listOf(evidence))

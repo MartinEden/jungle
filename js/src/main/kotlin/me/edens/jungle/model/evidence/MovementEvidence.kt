@@ -1,5 +1,6 @@
 package me.edens.jungle.model.evidence
 
+import me.edens.jungle.model.Human
 import me.edens.jungle.model.Place
 import me.edens.jungle.model.actors.Signature
 
@@ -8,7 +9,7 @@ data class MovementEvidence(
         val source: Place,
         val destination: Place
 ) : Evidence {
-    override fun apparentTo(observer: Observer): Boolean {
+    override fun apparentTo(observer: Human): Boolean {
         return observer.location == source || observer.location == destination
     }
 

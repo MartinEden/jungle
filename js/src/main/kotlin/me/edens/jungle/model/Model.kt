@@ -20,7 +20,8 @@ data class Model(
     fun update(action: Action): ModelChange {
         val afterAction = action.apply(this)
         return actors.fold(afterAction) { state, actor ->
-            actor.act(state.newModel).apply(state.newModel)
+            val change = actor.act(state.newModel).apply(state.newModel)
+            ModelChange(change.newModel, state.evidence + change.evidence)
         }
     }
 

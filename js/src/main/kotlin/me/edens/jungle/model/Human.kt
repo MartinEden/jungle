@@ -5,6 +5,7 @@ import me.edens.jungle.model.actions.HumanAction
 import me.edens.jungle.model.actions.HumanMoveAction
 import me.edens.jungle.model.actors.Actor
 import me.edens.jungle.model.actors.Signature
+import me.edens.jungle.model.evidence.Evidence
 
 data class Human(override val location: Place) : Actor {
     override val signature = Signature.Human

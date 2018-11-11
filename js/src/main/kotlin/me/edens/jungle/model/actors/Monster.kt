@@ -4,10 +4,14 @@ import me.edens.jungle.model.*
 import me.edens.jungle.model.actions.ActorAction
 import me.edens.jungle.model.actions.MoveAction
 import me.edens.jungle.model.actions.withEvidence
+import me.edens.jungle.model.evidence.Evidence
 import me.edens.jungle.model.evidence.TextEvidence
 import me.edens.jungle.model.evidence.withEvidence
 
-data class Monster(override val location: Place, val inhaled: Boolean) : BasicActor(Signature.Monster) {
+data class Monster(
+        override val location: Place,
+        val inhaled: Boolean
+) : BasicActor(Signature.Monster) {
     override fun act(model: Model): Action {
         return when {
             inhaled -> breathFire()
