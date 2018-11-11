@@ -5,7 +5,7 @@ import me.edens.jungle.model.Place
 import me.edens.jungle.model.actors.Signature
 
 data class MovementEvidence(
-        override val subject: Signature,
+        val subject: Signature,
         val source: Place,
         val destination: Place
 ) : Evidence {

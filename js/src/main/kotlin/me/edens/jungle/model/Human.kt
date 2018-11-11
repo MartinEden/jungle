@@ -4,10 +4,10 @@ import me.edens.jungle.model.actions.DoNothingAction
 import me.edens.jungle.model.actions.HumanAction
 import me.edens.jungle.model.actions.HumanMoveAction
 import me.edens.jungle.model.actors.Actor
+import me.edens.jungle.model.actors.MoveableActor
 import me.edens.jungle.model.actors.Signature
-import me.edens.jungle.model.evidence.Evidence
 
-data class Human(override val location: Place) : Actor {
+data class Human(override val location: Place) : MoveableActor {
     override val signature = Signature.Human
 
     fun actions(model: Model): Sequence<HumanAction> {

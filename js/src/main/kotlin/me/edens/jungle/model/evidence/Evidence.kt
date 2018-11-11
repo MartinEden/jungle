@@ -3,10 +3,8 @@ package me.edens.jungle.model.evidence
 import me.edens.jungle.model.Human
 import me.edens.jungle.model.Model
 import me.edens.jungle.model.ModelChange
-import me.edens.jungle.model.actors.Signature
 
 interface Evidence {
-    val subject: Signature
     fun apparentTo(observer: Human): Boolean
 }
 

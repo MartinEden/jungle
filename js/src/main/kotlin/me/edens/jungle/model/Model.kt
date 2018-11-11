@@ -43,7 +43,7 @@ data class Model(
     fun <T : Item, R : Item> updateItem(item: T, modified: (T) -> R): Model {
         return copy(items = items - listOf(item) + modified(item))
     }
-    fun <T : Actor, R : Actor> replaceActor(old: T, new: R): Model {
-        return copy(actors = actors - old + new)
-    }
+    fun removeActor(actor: Actor): Model = copy(actors = actors - actor)
+    fun addActor(actor: Actor): Model = copy(actors = actors + actor)
+    fun replaceActor(old: Actor, new: Actor) = removeActor(old).addActor(new)
 }
