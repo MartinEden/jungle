@@ -1,5 +1,14 @@
 package me.edens.jungle.model.evidence
 
 import me.edens.jungle.model.Place
+import me.edens.jungle.model.actors.Signature
 
-class TextEvidence(val message: String, override val source: Place): Evidence
+data class TextEvidence(
+        override val subject: Signature,
+        val message: String,
+        private val source: Place
+): Evidence {
+    override fun apparentTo(observer: Observer) = observer.location == source
+
+    override fun toString() = message
+}

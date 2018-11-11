@@ -4,8 +4,11 @@ import me.edens.jungle.model.actions.DoNothingAction
 import me.edens.jungle.model.actions.HumanAction
 import me.edens.jungle.model.actions.HumanMoveAction
 import me.edens.jungle.model.actors.Actor
+import me.edens.jungle.model.actors.Signature
 
 data class Human(override val location: Place) : Actor {
+    override val signature = Signature.Human
+
     fun actions(model: Model): Sequence<HumanAction> {
         return sequenceOf(
                 DoNothingAction()

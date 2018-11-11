@@ -26,15 +26,16 @@ class MainView {
 
     private fun dispatch(state: AppState, action: Action) {
         val modelChange = state.model.update(action)
-        render(AppState(modelChange.newModel, modelChange.evidence))
+        val feedback = modelChange.evidence.filter { it.apparentTo(modelChange.newModel.human) }
+        render(AppState(modelChange.newModel, feedback))
     }
 
     private fun render(state: AppState) {
         root.clear()
         root.append {
             ul {
-                state.feedback.filterIsInstance<TextEvidence>().forEach {
-                    li { +it.message }
+                state.feedback.forEach {
+                    li { +it.toString() }
                 }
             }
             when (state.model.status) {

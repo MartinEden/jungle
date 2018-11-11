@@ -7,7 +7,7 @@ import me.edens.jungle.model.actions.withEvidence
 import me.edens.jungle.model.evidence.TextEvidence
 import me.edens.jungle.model.evidence.withEvidence
 
-data class Monster(override val location: Place, val inhaled: Boolean) : BasicActor() {
+data class Monster(override val location: Place, val inhaled: Boolean) : BasicActor(Signature.Monster) {
     override fun act(model: Model): Action {
         return when {
             inhaled -> breathFire()
@@ -18,20 +18,21 @@ data class Monster(override val location: Place, val inhaled: Boolean) : BasicAc
     }
 
     private fun moveTo(place: Place) = MoveAction(this, place)
+
     private fun inhale() = object : ActorAction<Monster>(this) {
         override fun update(actor: Monster) = actor.copy(inhaled = true).withEvidence {
-            TextEvidence("Monster inhales", location)
+            TextEvidence(Signature.Monster, "Monster inhales", location)
         }
     }
 
     private fun breathFire() = object : Action {
         override fun apply(model: Model) = model.copy(status = Status.Death) withEvidence
-                TextEvidence("Monster breaths fire on you, killing you", location)
+                TextEvidence(Signature.Monster, "Monster breaths fire on you, killing you", location)
     }
 
     private fun protectBabies() = object : ActorAction<Monster>(this) {
         override fun update(actor: Monster) = copy(location = MonsterNest, inhaled = true).withEvidence {
-            TextEvidence("Monster charges to be babies rescue, nostrils flaming", location)
+            TextEvidence(Signature.Monster, "Monster charges to be babies rescue, nostrils flaming", location)
         }
     }
 

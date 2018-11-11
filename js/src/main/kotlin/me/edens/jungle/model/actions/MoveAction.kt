@@ -8,7 +8,7 @@ open class MoveAction<TActor : Actor>(actor: TActor, private val target: Place)
     : ActorAction<TActor>(actor) {
 
     override fun update(actor: TActor) = actor.atLocation(target).withEvidence {
-        MovementEvidence<TActor>(actor.location, it.location)
+        MovementEvidence(actor.signature, actor.location, target)
     }
 }
 
