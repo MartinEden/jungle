@@ -31,16 +31,11 @@ class StateExplorer {
         stateLookup + (seed.state to seed)
     }
 
-    fun findRunsThatSatisfy(showBest: Boolean, filter: (Model) -> Boolean): Sequence<Node> {
-        val subset = states.values
+    fun findRunsThatSatisfy(filter: (Model) -> Boolean): Sequence<Node> {
+        return states.values
                 .asSequence()
                 .filter { filter(it.state) }
                 .sortedBy { it.pathLength }
-        return if (showBest && subset.any()) {
-            sequenceOf(subset.first())
-        } else {
-            subset
-        }
     }
 }
 

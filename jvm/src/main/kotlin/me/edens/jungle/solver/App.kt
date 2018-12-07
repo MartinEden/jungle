@@ -4,7 +4,7 @@ import me.edens.jungle.model.Status
 
 fun main(args: Array<String>) {
     val explorer = StateExplorer()
-    val runs = explorer.findRunsThatSatisfy(false) {
+    val runs = explorer.findRunsThatSatisfy {
         it.status == Status.Death
     }.toList()
     println("Total number of solutions: ${runs.size}")
