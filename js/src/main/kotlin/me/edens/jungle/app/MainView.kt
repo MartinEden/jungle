@@ -25,10 +25,11 @@ class MainView {
 
     private fun dispatch(state: AppState, action: Action) {
         val modelChange = state.model.update(action)
+        val model = modelChange.newModel
         val feedback = modelChange.evidence
-                .filter { it.apparentTo(modelChange.newModel.human) }
-                .map { it.describe(modelChange.newModel.human) }
-        render(AppState(modelChange.newModel, feedback))
+                .filter { it.apparentTo(model.human, model.map) }
+                .map { it.describe(model.human, model.map) }
+        render(AppState(model, feedback))
     }
 
     private fun render(state: AppState) {

@@ -3,7 +3,12 @@ package me.edens.jungle.model
 data class Map(val transitions: Set<PlaceTransitions>) {
     private val transitionMap = transitions.associateBy({ it.source }, { it.transitions })
 
-    fun getNeighbours(place: Place) = transitionMap[place]!!.map { it.value }
+    fun getNeighbours(place: Place): List<Transition>
+            = transitionMap[place]!!.map { it.value }
+    fun areNeighbours(a: Place, b: Place): Boolean
+            = b in getNeighbours(a).map { it.target }
+    fun directionTo(from: Place, to: Place): String?
+            = getNeighbours(from).singleOrNull { it.target == to }?.description
 
     companion object {
         val initial = Map(

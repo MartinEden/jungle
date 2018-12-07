@@ -2,10 +2,10 @@ package me.edens.jungle.model.actors
 
 import me.edens.jungle.model.*
 import me.edens.jungle.model.actions.ActorAction
-import me.edens.jungle.model.actions.MoveAction
+import me.edens.jungle.model.actions.NoisyMoveAction
 import me.edens.jungle.model.actions.withEvidence
 import me.edens.jungle.model.evidence.AudioEvidence
-import me.edens.jungle.model.evidence.DualEvidence
+import me.edens.jungle.model.evidence.EvidenceGroup
 import me.edens.jungle.model.evidence.VisualEvidence
 import me.edens.jungle.model.evidence.withEvidence
 
@@ -23,14 +23,14 @@ data class Monster(
         }
     }
 
-    private fun moveTo(place: Place) = MoveAction(this, place)
+    private fun moveTo(place: Place) = NoisyMoveAction(this, place, "something big crashing through the undergrowth")
 
     private fun inhale(target: Place) = object : ActorAction<Monster>(this) {
         override fun update(actor: Monster) = actor.copy(breath = FireBreath.Inhaled(target)).withEvidence {
-            DualEvidence(
+            EvidenceGroup(listOf(
                     VisualEvidence("Monster inhales", location),
-                    AudioEvidence("a deep rushing sound, like air being sucked into a bellows")
-            )
+                    AudioEvidence("a deep rushing sound, like air being sucked into a bellows", location)
+            ))
         }
     }
 
@@ -71,10 +71,10 @@ data class Monster(
             if (newModel.human.location == target) {
                 newModel = newModel.copy(status = Status.Death)
             }
-            return newModel withEvidence DualEvidence(
+            return newModel withEvidence EvidenceGroup(listOf(
                     VisualEvidence("The monster breaths fire on you, killing you", target),
-                    AudioEvidence("the monster's flames whoosh in the jungle behind you")
-            )
+                    AudioEvidence("the monster's flames whoosh in the jungle behind you", target)
+            ))
         }
     }
 }

@@ -67,8 +67,8 @@ class SubsequentNode(var link: Link) : Node {
     override val state: Model by lazy { modelChange.newModel }
     override val feedback: List<String> by lazy {
         modelChange.evidence
-                .filter { it.apparentTo(state.human) }
-                .map { it.describe(state.human) }
+                .filter { it.apparentTo(state.human, state.map) }
+                .map { it.describe(state.human, state.map) }
     }
     override val pathLength = 1 + link.parent.pathLength
 
