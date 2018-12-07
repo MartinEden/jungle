@@ -36,8 +36,17 @@ data class Model(
 
     private val things by lazy { actors + items }
 
-    val here by lazy {
+    val here by lazy  {
         things.filter { it.location == human.location || it.location == Inventory }
+    }
+    fun at(place: Place): List<Thing>  {
+        return things.filter { it.location == place }
+    }
+    fun actorsAt(place: Place): List<Actor>  {
+        return actors.filter { it.location == place }
+    }
+    fun itemsAt(place: Place): List<Item>  {
+        return items.filter { it.location == place }
     }
 
     inline fun <reified T> withIfPresent(action: (T) -> Unit) {

@@ -6,6 +6,7 @@ import me.edens.jungle.model.actions.HumanMoveAction
 import me.edens.jungle.model.actors.Actor
 import me.edens.jungle.model.actors.MoveableActor
 import me.edens.jungle.model.actors.Signature
+import kotlin.math.sign
 
 data class Human(override val location: Place) : MoveableActor {
     override val signature = Signature.Human
@@ -22,6 +23,7 @@ data class Human(override val location: Place) : MoveableActor {
         return model.map
                 .getNeighbours(location)
                 .asSequence()
+                .filter { it.accessibleTo(signature) }
                 .map { transition -> HumanMoveAction(this, transition) }
     }
 

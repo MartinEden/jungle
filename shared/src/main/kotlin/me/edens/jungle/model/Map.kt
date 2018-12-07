@@ -1,5 +1,7 @@
 package me.edens.jungle.model
 
+import me.edens.jungle.model.actors.Signature
+
 data class Map(val transitions: Set<PlaceTransitions>) {
     private val transitionMap = transitions.associateBy({ it.source }, { it.transitions })
 
@@ -22,7 +24,11 @@ data class Map(val transitions: Set<PlaceTransitions>) {
                         PlaceTransitions(PigsPlace, setOf(
                                 "north" transitionTo WolfDen,
                                 "east" transitionTo HivePlace,
-                                "south" transitionTo FlowerGrove
+                                "south" transitionTo FlowerGrove,
+                                Transition("undergrowth", PigsPlace.Undergrowth, Access.Just(Signature.Pig))
+                        )),
+                        PlaceTransitions(PigsPlace.Undergrowth, setOf(
+                                Transition("out", PigsPlace, Access.Just(Signature.Pig))
                         )),
                         PlaceTransitions(HivePlace, setOf(
                                 "north" transitionTo MonsterNest,

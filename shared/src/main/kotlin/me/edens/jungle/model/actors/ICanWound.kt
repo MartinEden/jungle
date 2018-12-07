@@ -1,3 +1,5 @@
 package me.edens.jungle.model.actors
 
-interface ICanWound
+import me.edens.jungle.model.Thing
+
+interface ICanWound : Thing

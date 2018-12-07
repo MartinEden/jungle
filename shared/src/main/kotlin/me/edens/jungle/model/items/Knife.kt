@@ -4,6 +4,8 @@ import me.edens.jungle.model.*
 import me.edens.jungle.model.actions.HumanAction
 import me.edens.jungle.model.actors.ICanWound
 import me.edens.jungle.model.actors.Monster
+import me.edens.jungle.model.actors.Pig
+import me.edens.jungle.model.actors.PigCarcass
 import me.edens.jungle.model.evidence.VisualEvidence
 import me.edens.jungle.model.evidence.withEvidence
 import me.edens.jungle.model.evidence.withNoEvidence
@@ -45,6 +47,10 @@ class Knife(location: Place) : BasicItem("Knife", location) {
                             |You throw yourself at the beast's neck, attacking with ferocity, but your knife is unable to
                             |do more than score its thick leathery flesh. Before you can dodge aside, it whirls and gores
                             |you fatally.""",
+                        model.human.location
+                ))
+                is Pig -> model.removeActor(target).addItem(PigCarcass(target.location)).withEvidence(VisualEvidence(
+                        "You grab the pig around the neck and as it bucks and squeals you quickly slit its throat.",
                         model.human.location
                 ))
                 else -> throw Exception("Need to handle all ICanWound entities here")
