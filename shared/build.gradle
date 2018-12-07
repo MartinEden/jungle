@@ -1,7 +1,4 @@
-apply plugin: 'application'
 apply plugin: 'kotlin'
-
-mainClassName = "me.edens.jungle.solver.AppKt"
 
 repositories {
     mavenCentral()
@@ -9,5 +6,4 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib"
-    compile project(":shared")
 }

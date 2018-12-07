@@ -5,6 +5,12 @@ repositories {
     jcenter()
 }
 
+evaluationDependsOn(':shared')
+
+sourceSets {  
+    main.kotlin.srcDirs += project(':shared').sourceSets.main.kotlin.srcDirs
+}
+
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
     compile "org.jetbrains.kotlinx:kotlinx-html-js:0.6.11"
