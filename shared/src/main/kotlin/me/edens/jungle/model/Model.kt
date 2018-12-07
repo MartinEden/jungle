@@ -36,17 +36,20 @@ data class Model(
 
     private val things by lazy { actors + items }
 
-    val here by lazy  {
+    val here by lazy {
         things.filter { it.location == human.location || it.location == Inventory }
     }
-    fun at(place: Place): List<Thing>  {
+
+    fun at(place: Place): List<Thing> {
         return things.filter { it.location == place }
     }
-    fun actorsAt(place: Place): List<Actor>  {
-        return actors.filter { it.location == place }
+
+    inline fun <reified T : Actor> actorsAt(place: Place): List<T> {
+        return actors.filter { it.location == place }.filterIsInstance<T>()
     }
-    fun itemsAt(place: Place): List<Item>  {
-        return items.filter { it.location == place }
+
+    inline fun <reified T: Item> itemsAt(place: Place): List<T> {
+        return items.filter { it.location == place }.filterIsInstance<T>()
     }
 
     inline fun <reified T> withIfPresent(action: (T) -> Unit) {
@@ -59,9 +62,10 @@ data class Model(
     fun <T : Item, R : Item> updateItem(item: T, modified: (T) -> R): Model {
         return replaceItem(item, modified(item))
     }
+
     fun removeItem(item: Item): Model = copy(items = items - item)
     fun addItem(item: Item): Model = copy(items = items + item)
-    fun replaceItem(old: Item, new: Item) = removeItem(old).removeItem(new)
+    fun replaceItem(old: Item, new: Item) = removeItem(old).addItem(new)
 
     fun removeActor(actor: Actor): Model = copy(actors = actors - actor)
     fun addActor(actor: Actor): Model = copy(actors = actors + actor)

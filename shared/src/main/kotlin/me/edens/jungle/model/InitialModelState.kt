@@ -4,6 +4,7 @@ import me.edens.jungle.model.actors.FireBreath
 import me.edens.jungle.model.actors.Monster
 import me.edens.jungle.model.actors.Pig
 import me.edens.jungle.model.items.Knife
+import me.edens.jungle.model.items.Mushroom
 import me.edens.jungle.model.items.Parachute
 
 object InitialModelState {
@@ -15,6 +16,7 @@ object InitialModelState {
     private val initialItems by lazy {
         listOf(
                 Knife(Inventory),
+                Mushroom(Cave),
                 Parachute(CrashSite)
         )
     }

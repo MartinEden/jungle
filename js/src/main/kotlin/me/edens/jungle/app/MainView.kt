@@ -7,6 +7,7 @@ import me.edens.jungle.model.Action
 import me.edens.jungle.model.Inventory
 import me.edens.jungle.model.Status
 import me.edens.jungle.model.actions.HumanAction
+import me.edens.jungle.model.actions.DropAction
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 import kotlin.browser.document
@@ -60,7 +61,12 @@ class MainView {
             p { +"Inventory "}
             ul {
                 model.items.filter { it.location == Inventory }.forEach {
-                    li { +it.toString() }
+                    li {
+                        span { +it.toString() }
+                        span { +" [" }
+                        actionLink(state, DropAction(it))
+                        span { +"]" }
+                    }
                 }
             }
         }

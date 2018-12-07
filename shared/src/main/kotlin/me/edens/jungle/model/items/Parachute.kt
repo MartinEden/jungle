@@ -1,6 +1,5 @@
 package me.edens.jungle.model.items
 
-import me.edens.jungle.model.Action
 import me.edens.jungle.model.Inventory
 import me.edens.jungle.model.Model
 import me.edens.jungle.model.Place

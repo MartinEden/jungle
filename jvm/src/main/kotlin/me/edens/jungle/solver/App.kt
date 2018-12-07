@@ -1,11 +1,12 @@
 package me.edens.jungle.solver
 
-import me.edens.jungle.model.Status
+import me.edens.jungle.model.Inventory
+import me.edens.jungle.model.items.Mushroom
 
 fun main(args: Array<String>) {
     val explorer = StateExplorer()
     val runs = explorer.findRunsThatSatisfy {
-        it.status == Status.Death
+        it.itemsAt<Mushroom>(Inventory).any()
     }.toList()
     println("Total number of solutions: ${runs.size}")
     if (runs.any()) {
