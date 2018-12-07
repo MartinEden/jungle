@@ -12,16 +12,21 @@ data class Model(
 ) {
     val actionOptions: Sequence<HumanAction> by lazy {
         when (status) {
-            Status.InProgress -> human.actions(this) + here.flatMap { it.affordances(this).toList() }
+            Status.InProgress -> human.actions(this) + here
+                    .filterIsInstance<Item>()
+                    .flatMap { it.affordances(this).toList() }
             else -> emptySequence()
         }
     }
 
     fun update(action: Action): ModelChange {
         val afterAction = action.apply(this)
-        return actors.fold(afterAction) { state, actor ->
-            val change = actor.act(state.newModel).apply(state.newModel)
-            ModelChange(change.newModel, state.evidence + change.evidence)
+        return actors.fold(afterAction) { cumulativeChange, actor ->
+            if (cumulativeChange.newModel.status == Status.InProgress) {
+                cumulativeChange.andThen { model -> actor.act(model).apply(model) }
+            } else {
+                cumulativeChange
+            }
         }
     }
 
@@ -29,8 +34,10 @@ data class Model(
         actors.filterIsInstance<Human>().single()
     }
 
+    private val things by lazy { actors + items }
+
     val here by lazy {
-        items.filter { it.location == human.location || it.location == Inventory }
+        things.filter { it.location == human.location || it.location == Inventory }
     }
 
     inline fun <reified T> withIfPresent(action: (T) -> Unit) {
@@ -41,8 +48,12 @@ data class Model(
     }
 
     fun <T : Item, R : Item> updateItem(item: T, modified: (T) -> R): Model {
-        return copy(items = items - listOf(item) + modified(item))
+        return replaceItem(item, modified(item))
     }
+    fun removeItem(item: Item): Model = copy(items = items - item)
+    fun addItem(item: Item): Model = copy(items = items + item)
+    fun replaceItem(old: Item, new: Item) = removeItem(old).removeItem(new)
+
     fun removeActor(actor: Actor): Model = copy(actors = actors - actor)
     fun addActor(actor: Actor): Model = copy(actors = actors + actor)
     fun replaceActor(old: Actor, new: Actor) = removeActor(old).addActor(new)

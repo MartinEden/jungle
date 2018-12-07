@@ -12,7 +12,7 @@ import me.edens.jungle.model.evidence.withEvidence
 data class Monster(
         override val location: Place,
         val breath: FireBreath
-) : BasicActor(Signature.Monster), MoveableActor {
+) : BasicActor(Signature.Monster), MoveableActor, ICanWound {
     override fun act(model: Model): Action {
         val sight = getSightOf(model.human, model)
         return when {
@@ -80,6 +80,10 @@ data class Monster(
 }
 
 sealed class FireBreath {
-    object NotReady: FireBreath()
-    data class Inhaled(val targetLastSeenAt: Place): FireBreath()
+    object NotReady: FireBreath() {
+        override fun toString() = "Normal"
+    }
+    data class Inhaled(val targetLastSeenAt: Place): FireBreath() {
+        override fun toString() = "Inhaled"
+    }
 }
