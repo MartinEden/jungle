@@ -1,7 +1,5 @@
 package me.edens.jungle.model
 
-import me.edens.jungle.model.actors.Signature
-
 abstract class Place(val description: String) {
     override fun toString() = description
 }

@@ -2,6 +2,7 @@ package me.edens.jungle.model
 
 import me.edens.jungle.model.actions.HumanAction
 import me.edens.jungle.model.actors.Actor
+import me.edens.jungle.model.actors.actorOrder
 import me.edens.jungle.model.items.Item
 
 data class Model(
@@ -21,11 +22,18 @@ data class Model(
 
     fun update(action: Action): ModelChange {
         val afterAction = action.apply(this)
-        return actors.fold(afterAction) { cumulativeChange, actor ->
-            if (cumulativeChange.newModel.status == Status.InProgress) {
-                cumulativeChange.andThen { model -> actor.act(model).apply(model) }
+        return actorOrder.fold(afterAction) { change, signature ->
+            val actors = change.newModel.actors.filter { it.signature == signature }
+            updateActors(actors, change)
+        }
+    }
+
+    private fun updateActors(actors: List<Actor>, initialChange: ModelChange): ModelChange {
+        return actors.fold(initialChange) { change, actor ->
+            if (change.newModel.status == Status.InProgress) {
+                change.andThen { model -> actor.act(model).apply(model) }
             } else {
-                cumulativeChange
+                change
             }
         }
     }
@@ -48,7 +56,7 @@ data class Model(
         return actors.filter { it.location == place }.filterIsInstance<T>()
     }
 
-    inline fun <reified T: Item> itemsAt(place: Place): List<T> {
+    inline fun <reified T : Item> itemsAt(place: Place): List<T> {
         return items.filter { it.location == place }.filterIsInstance<T>()
     }
 

@@ -24,7 +24,7 @@ fun Actor.getSightOf(subject: Actor, model: Model): Sight = if (subject.location
 } else {
     val sightTrail = model.actors
             .filterIsInstance<SightTrail>()
-            .singleOrNull { it.source == location && it.signature == subject.signature }
+            .singleOrNull { it.source == location && it.targetSignature == subject.signature }
     if (sightTrail != null) {
         Sight.Saw(sightTrail.target)
     } else {

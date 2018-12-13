@@ -35,7 +35,11 @@ data class Monster(
     }
 
     private fun breathFire(sight: Sight, previousLocation: Place): Action {
-        val newTarget = if (sight is Sight.Saw) { sight.place } else { previousLocation }
+        val newTarget = if (sight is Sight.Saw) {
+            sight.place
+        } else {
+            previousLocation
+        }
         return BreathFireAction(this, newTarget)
     }
 
@@ -80,10 +84,11 @@ data class Monster(
 }
 
 sealed class FireBreath {
-    object NotReady: FireBreath() {
+    object NotReady : FireBreath() {
         override fun toString() = "Normal"
     }
-    data class Inhaled(val targetLastSeenAt: Place): FireBreath() {
+
+    data class Inhaled(val targetLastSeenAt: Place) : FireBreath() {
         override fun toString() = "Inhaled"
     }
 }
