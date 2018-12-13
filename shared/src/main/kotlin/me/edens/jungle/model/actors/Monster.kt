@@ -3,6 +3,8 @@ package me.edens.jungle.model.actors
 import me.edens.jungle.model.*
 import me.edens.jungle.model.actions.ActorAction
 import me.edens.jungle.model.actions.NoisyMoveAction
+import me.edens.jungle.model.actions.monster.BreathFireAction
+import me.edens.jungle.model.actions.monster.EatCarcassAction
 import me.edens.jungle.model.actions.withEvidence
 import me.edens.jungle.model.evidence.AudioEvidence
 import me.edens.jungle.model.evidence.EvidenceGroup
@@ -11,14 +13,17 @@ import me.edens.jungle.model.evidence.withEvidence
 
 data class Monster(
         override val location: Place,
-        val breath: FireBreath
+        val breath: FireBreath,
+        val hungry: Boolean
 ) : BasicActor(Signature.Monster), MoveableActor, ICanWound {
     override fun act(model: Model): Action {
         val sight = getSightOf(model.human, model)
+        val carcass = model.itemsAt<PigCarcass>(location).firstOrNull()
         return when {
-            breath is FireBreath.Inhaled -> breathFire(sight, breath.targetLastSeenAt)
             model.human.location == MonsterNest -> protectBabies()
+            breath is FireBreath.Inhaled -> breathFire(sight, breath.targetLastSeenAt)
             sight is Sight.Saw -> inhale(sight.place)
+            carcass != null -> EatCarcassAction(this, carcass)
             else -> moveTo(nextPlace(location))
         }
     }
@@ -45,7 +50,7 @@ data class Monster(
 
     private fun protectBabies() = object : ActorAction<Monster>(this) {
         override fun update(actor: Monster) = copy(location = MonsterNest, breath = FireBreath.Inhaled(MonsterNest)).withEvidence {
-            VisualEvidence("Monster charges to be babies rescue, nostrils flaming", location)
+            VisualEvidence("Monster charges to the babies rescue, nostrils flaming", MonsterNest)
         }
     }
 
@@ -64,23 +69,12 @@ data class Monster(
 
     override fun fieldsAreEqual(other: Any): Boolean {
         return super.fieldsAreEqual(other)
-                && breath == (other as Monster).breath
+                && other is Monster
+                && breath == other.breath
+                && hungry == other.hungry
     }
 
     override fun atLocation(location: Place) = copy(location = location)
-
-    class BreathFireAction(private val monster: Monster, private val target: Place) : Action {
-        override fun apply(model: Model): ModelChange {
-            var newModel = model.replaceActor(monster, monster.copy(breath = FireBreath.NotReady))
-            if (newModel.human.location == target) {
-                newModel = newModel.copy(status = Status.Death)
-            }
-            return newModel withEvidence EvidenceGroup(listOf(
-                    VisualEvidence("The monster breaths fire on you, killing you", target),
-                    AudioEvidence("the monster's flames whoosh in the jungle behind you", target)
-            ))
-        }
-    }
 }
 
 sealed class FireBreath {

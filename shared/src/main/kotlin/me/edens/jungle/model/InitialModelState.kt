@@ -25,7 +25,7 @@ object InitialModelState {
         listOf(
                 Human(Clearing),
                 Pig(PigsPlace),
-                Monster(MonsterNest, breath = FireBreath.NotReady)
+                Monster(MonsterNest, breath = FireBreath.NotReady, hungry = true)
         )
     }
 }
