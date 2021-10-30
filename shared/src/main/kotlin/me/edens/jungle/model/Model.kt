@@ -1,5 +1,6 @@
 package me.edens.jungle.model
 
+import ModelStateException
 import me.edens.jungle.model.actions.HumanAction
 import me.edens.jungle.model.actors.Actor
 import me.edens.jungle.model.actors.actorOrder
@@ -11,6 +12,12 @@ data class Model(
         val items: List<Item>,
         val actors: List<Actor>
 ) {
+    init {
+        if (actors.filterIsInstance<Human>().count() > 1) {
+            throw ModelStateException("More than one human in model")
+        }
+    }
+
     val actionOptions: Sequence<HumanAction> by lazy {
         when (status) {
             Status.InProgress -> human.actions(this) + here
@@ -48,6 +55,10 @@ data class Model(
         things.filter { it.location == human.location || it.location == Inventory }
     }
 
+    val inventory by lazy {
+        items.filter { it.location == Inventory }
+    }
+
     fun at(place: Place): List<Thing> {
         return things.filter { it.location == place }
     }
@@ -75,7 +86,11 @@ data class Model(
     fun addItem(item: Item): Model = copy(items = items + item)
     fun replaceItem(old: Item, new: Item) = removeItem(old).addItem(new)
 
-    fun removeActor(actor: Actor): Model = copy(actors = actors - actor)
+    fun removeActor(actor: Actor): Model = if (actor in actors) {
+        copy(actors = actors - actor)
+    } else {
+        throw ModelStateException("Attempted to remove $actor from model when it didn't exist.\nState: $this")
+    }
     fun addActor(actor: Actor): Model = copy(actors = actors + actor)
     fun replaceActor(old: Actor, new: Actor) = removeActor(old).addActor(new)
 }

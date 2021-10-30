@@ -6,6 +6,8 @@ import me.edens.jungle.model.Status
 import me.edens.jungle.model.Model
 import me.edens.jungle.model.PigsPlace
 import me.edens.jungle.model.actors.PigCarcass
+import me.edens.jungle.model.items.Mushroom
+import me.edens.jungle.solver.fullPathAsString
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -17,7 +19,6 @@ class BasicTests {
     }
 
     @Test
-    @Disabled
     fun `there exists some way of winning`() {
         assertThatARunSatisfies { it.status == Status.Victory }
     }
@@ -29,13 +30,17 @@ class BasicTests {
 
     @Test
     fun `human can get pig carcass`() {
-        assertThatARunSatisfies { state -> state.items.any { it is PigCarcass && it.location == Inventory } }
+        assertThatARunSatisfies { state ->
+            state.inventory.any { it is PigCarcass }
+        }
     }
 
     private fun assertThatARunSatisfies(filter: (Model) -> Boolean) {
-        assertThat(explorer.findRunsThatSatisfy(filter).any())
+        val run = explorer.findRunsThatSatisfy(filter).firstOrNull()
+        assertThat(run)
                 .withFailMessage("Unable to find any run that satisfies the given condition")
-                .isTrue()
+                .isNotNull
+        println(run!!.fullPathAsString())
     }
 
     private fun assertThatNoRunSatisfies(filter: (Model) -> Boolean) {

@@ -1,6 +1,7 @@
 package me.edens.jungle.model.items
 
 import me.edens.jungle.model.*
+import me.edens.jungle.model.actions.DropAction
 import me.edens.jungle.model.actions.HumanAction
 import me.edens.jungle.model.actions.PickupAction
 
@@ -28,7 +29,9 @@ abstract class BasicItem(
 fun Item.moveableAffordances(): Sequence<HumanAction> {
     val item = this
     return sequence {
-        if (item.location != Inventory) {
+        if (item.location == Inventory) {
+            yield(DropAction(item))
+        } else {
             yield(PickupAction(item))
         }
     }

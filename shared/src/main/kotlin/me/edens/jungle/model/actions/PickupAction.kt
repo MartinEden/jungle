@@ -13,7 +13,7 @@ class PickupAction(private val item: Item) : HumanAction {
     }.withNoEvidence()
 }
 
-class DropAction(private val item: Item): HumanAction {
+class DropAction(val item: Item): HumanAction {
     override val description = "Drop $item"
 
     override fun apply(model: Model) = model.updateItem(item) {

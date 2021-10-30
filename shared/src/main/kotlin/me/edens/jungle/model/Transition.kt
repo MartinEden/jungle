@@ -4,6 +4,7 @@ import me.edens.jungle.model.actors.Signature
 
 class PlaceTransitions(val source: Place, transitions: Set<Transition>) {
     val transitions = transitions.associateBy { it.target }
+    override fun toString() = "$source to: ${transitions.toList().joinToString()}"
 }
 
 data class Transition(val description: String, val target: Place, val access: Access) {
@@ -11,6 +12,8 @@ data class Transition(val description: String, val target: Place, val access: Ac
         Access.Everyone -> true
         is Access.Just -> signature == access.allowed
     }
+
+    override fun toString() = target.toString()
 }
 
 sealed class Access {

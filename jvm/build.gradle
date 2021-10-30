@@ -7,9 +7,14 @@ repositories {
     mavenCentral()
 }
 
+evaluationDependsOn(':shared')
+
+sourceSets {
+    main.kotlin.srcDirs += project(':shared').sourceSets.main.kotlin.srcDirs
+}
+
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib"
-    compile project(":shared")
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.2'
@@ -18,4 +23,8 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+application {
+    applicationDefaultJvmArgs = ['-Xms6144m', '-Xmx6144m']
 }

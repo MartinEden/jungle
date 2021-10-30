@@ -23,4 +23,6 @@ class HumanMoveAction(human: Human, transition: Transition)
     : MoveAction<Human>(human, transition.target), HumanAction {
 
     override val description = "Go ${transition.description} to ${transition.target}"
+
+    override fun toString() = description
 }
